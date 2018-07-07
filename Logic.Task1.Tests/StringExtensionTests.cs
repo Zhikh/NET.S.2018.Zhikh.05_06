@@ -16,7 +16,7 @@ namespace Logic.Task1.Tests
         [TestCase("10000000000000000000000000000000", 2, int.MinValue)]
         public void ToDecimal_String_CorrectResult(string value, int scale, int expected)
         {
-            var notation = new Notation(scale);     //need singleton
+            var notation = new Notation(scale);     
 
             int actual = value.ToDecimal(notation);
 

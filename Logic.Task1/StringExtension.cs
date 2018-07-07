@@ -10,6 +10,11 @@ namespace Logic.Task1
     {
         private const int BITS_IN_BYTE = 8;
 
+        /// <summary>
+        /// Converts string value into decimal value
+        /// </summary>
+        /// <param name="value"> Decimal of written in the p-number system </param>
+        /// <returns> Decimal value </returns>
         public static int ToDecimal(this string value, Notation notation)
         {
             if (value.Length > sizeof(int) * BITS_IN_BYTE)
