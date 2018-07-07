@@ -28,6 +28,7 @@ namespace Logic.Task1
         /// <summary>
         /// Scale of natation
         /// </summary>
+        /// <exception cref="ArgumentException"> If scale isn't in range [2, 16] </exception>
         public int NotationScale
         {
             get
@@ -59,6 +60,8 @@ namespace Logic.Task1
         /// </summary>
         /// <param name="value"> Decimal of written in the p-number system </param>
         /// <returns> Decimal value </returns>
+        /// <exception cref="OverflowException"> If result of calculation gives overflow </exception>
+        /// <exception cref="ArgumentException"> If string value or scale of notation aren't correct </exception>
         internal int Convert(string value)
         {
             ToIntArray(value, out int[] array);
