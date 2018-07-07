@@ -12,6 +12,8 @@ namespace Logic.Task1.Tests
         [TestCase("764241", 8, 256161)]
         [TestCase("1AeF101", 16, 28242177)]
         [TestCase("1ACB67", 16, 1756007)]
+        [TestCase("7FFFFFFF", 16, int.MaxValue)]
+        [TestCase("10000000000000000000000000000000", 2, int.MinValue)]
         public void ToDecimal_String_CorrectResult(string value, int scale, int expected)
         {
             var notation = new Notation(scale);     //need singleton
@@ -24,6 +26,8 @@ namespace Logic.Task1.Tests
         [TestCase("1AeF101", 2)]
         [TestCase("SA123", 2)]
         [TestCase("764241", 2)]
+        [TestCase("123", 3)]
+        [TestCase("H123A", 16)]
         public void ToDecimal_UncorrectParams_ThrowArgumentException(string value, int scale)
         {
             var notation = new Notation(scale);
@@ -32,6 +36,7 @@ namespace Logic.Task1.Tests
         }
 
         [TestCase("11111111111111111111111111111111", 2)]
+        [TestCase("111111100000000000000001111111111", 2)]
         public void ToDecimal_UncorrectParams_ThrowOverflowException(string value, int scale)
         {
             var notation = new Notation(scale);
