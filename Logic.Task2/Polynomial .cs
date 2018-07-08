@@ -59,22 +59,20 @@ namespace Logic.Task2
             }
 
             double[] c = new double[a.Length];
-
-            checked
+            
+            int i = 0;
+            for (; i < b.Length; i++)
             {
-                int i = 0;
-                for (; i < b.Length; i++)
-                {
-                    c[i] = a[i] + b[i];
-                }
+                c[i] = a[i] + b[i];
+            }
 
-                for (; i < a.Length; i++)
-                {
-                    c[i] = a[i];
-                }
+            for (; i < a.Length; i++)
+            {
+                c[i] = a[i];
             }
 
             return new Polynomial(f._variable, c);
+           
         }
 
         /// <summary>
@@ -109,7 +107,7 @@ namespace Logic.Task2
             {
                 c[i] = a[i];
             }
-
+                
             for (int i = 0; i < b.Length; i++)
             {
                 c[i] -= b[i];
@@ -136,17 +134,15 @@ namespace Logic.Task2
 
             int n = a.Length + b.Length - 1;
             double[] c = new double[n];
-
-            checked
+           
+            for (int i = 0; i < a.Length; i++)
             {
-                for (int i = 0; i < a.Length; i++)
+                for (int j = 0; j < b.Length; j++)
                 {
-                    for (int j = 0; j < b.Length; j++)
-                    {
-                        c[i + j] += a[i] * b[j];
-                    }
+                    c[i + j] += a[i] * b[j];
                 }
             }
+
             return new Polynomial(f._variable, c);
         }
 
@@ -247,17 +243,16 @@ namespace Logic.Task2
         #region Private methods
         private static double CalculatePolinomial(double variable, double[] coefficients)
         {
+            
             double result = 0;
-
-            checked
+                
+            for (int i = 0; i < coefficients.Length; i++)
             {
-                for (int i = 0; i < coefficients.Length; i++)
-                {
-                    result += coefficients[i] * Math.Pow(variable, i);
-                }
+                result += coefficients[i] * Math.Pow(variable, i);
             }
 
             return result;
+           
         }
         #endregion
     }
