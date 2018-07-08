@@ -158,6 +158,11 @@ namespace Logic.Task2
                 return false;
             }
 
+            if (f._variable != g._variable)
+            {
+                return false;
+            }
+
             for (int i = 0; i < f._coefficients.Length; i++)
             {
                 if (f._coefficients[i] != g._coefficients[i])
