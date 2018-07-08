@@ -41,27 +41,27 @@ namespace Logic.Task2
         /// <returns> New polynomial </returns>
         public static Polynomial operator +(Polynomial f, Polynomial g)
         {
+            if (f._variable != g._variable)
+            {
+                throw new ArgumentException("Variables of polinoms must be the same!");
+            }
+
+            double[] a, b;
+            if (f._coefficients.Length >= g._coefficients.Length)
+            {
+                a = f._coefficients;
+                b = g._coefficients;
+            }
+            else
+            {
+                a = g._coefficients;
+                b = f._coefficients;
+            }
+
+            double[] c = new double[a.Length];
+
             checked
             {
-                if (f._variable != g._variable)
-                {
-                    throw new ArgumentException("Variables of polinoms must be the same!");
-                }
-
-                double[] a, b;
-                if (f._coefficients.Length >= g._coefficients.Length)
-                {
-                    a = f._coefficients;
-                    b = g._coefficients;
-                }
-                else
-                {
-                    a = g._coefficients;
-                    b = f._coefficients;
-                }
-
-                double[] c = new double[a.Length];
-
                 int i = 0;
                 for (; i < b.Length; i++)
                 {
@@ -126,19 +126,19 @@ namespace Logic.Task2
         /// <returns> New polynomial </returns>
         public static Polynomial operator *(Polynomial f, Polynomial g)
         {
+            if (f._variable != g._variable)
+            {
+                throw new ArgumentException("Variables of polinoms must be the same!");
+            }
+
+            double[] a = f._coefficients;
+            double[] b = g._coefficients;
+
+            int n = a.Length + b.Length - 1;
+            double[] c = new double[n];
+
             checked
             {
-                if (f._variable != g._variable)
-                {
-                    throw new ArgumentException("Variables of polinoms must be the same!");
-                }
-
-                double[] a = f._coefficients;
-                double[] b = g._coefficients;
-
-                int n = a.Length + b.Length - 1;
-                double[] c = new double[n];
-
                 for (int i = 0; i < a.Length; i++)
                 {
                     for (int j = 0; j < b.Length; j++)
