@@ -68,17 +68,25 @@ namespace Logic.Task1
 
             CheckOnBase(array);
 
-            int result = 0;
-            checked
-            {
-                int i = 0;
-                for (var power = array.Count() - 1; power >= 0; power--)
+            try
+            { 
+                int result = 0;
+                checked
                 {
-                    result += (int)Math.Pow(NotationScale, power) * array[i++];
+                    int i = 0;
+                    for (var power = array.Count() - 1; power >= 0; power--)
+                    {
+                        result += (int)Math.Pow(NotationScale, power) * array[i++];
+                    }
                 }
+
+                return result;
+            }
+            catch (OverflowException ex)
+            {
+                throw ex;
             }
 
-            return result;
         }
         #endregion
 
