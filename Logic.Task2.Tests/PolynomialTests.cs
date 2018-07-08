@@ -5,7 +5,7 @@ using Logic.Task2;
 namespace Logic.Tests.Task2
 {
     [TestFixture]
-    public class PolinomialTests
+    public class PolynomialTests
     {
         #region Exceptions
         [TestCase(13.14, 1.08, 0.2, 1.5, 3.2)]
@@ -85,7 +85,7 @@ namespace Logic.Tests.Task2
 
         [TestCase(13.14, 0.2, 15, 4, 8, 56.7)]
         [TestCase(0, 1.5, 3.2, 18, 19.65)]
-        [TestCase(Double.MinValue, 1.5, 3.2, 18, 19.65)]
+        [TestCase(100.09, 1.5, 3.2, 18, 19.65)]
         public void ComparisonOperation_DifferentPolynomialWithDifferentCoef_CorrectResult(double value, params double[] coef)
         {
             var f = new Polynomial(value, coef[0], coef[1]);
@@ -115,7 +115,6 @@ namespace Logic.Tests.Task2
         #endregion
 
         #region Value
-
         [TestCase(0, 0, 0.2, 15, 4, 8, 56.7)]
         [TestCase(1, 1, 1, 1, 1, 1)]
         [TestCase(2, 15, 1, 1, 1, 1)]
@@ -130,7 +129,79 @@ namespace Logic.Tests.Task2
         #endregion
 
         #region Arithmetic operations
-        
+        [TestCase(0, 0, 0.2, 15, 4, 8, 56.7)]
+        [TestCase(1, 5, 1, 1, 1, 1)]
+        [TestCase(2, 10, 1, 1, 1, 1)]
+        [TestCase(5.5, 122.1, 0, 10, 0.4)]
+        public void SumOperation_VariableCoef_CorrectResult(double value, double expected, params double[] coef)
+        {
+            var f = new Polynomial(value, coef[0], coef[1], coef[2]);
+            var g = new Polynomial(value, coef[0], coef[1]);
+            var t = f + g;
+            double actual = (f + g).Value;
+
+            Assert.AreEqual(expected, actual, 3);
+        }
+        #endregion
+
+        #region Arithmetic operations
+        [TestCase(0, 0, 0.2, 15, 4, 8, 56.7)]
+        [TestCase(1, 5, 1, 1, 1, 1)]
+        [TestCase(2, 10, 1, 1, 1, 1)]
+        [TestCase(5.5, 122.1, 0, 10, 0.4)]
+        public void SumOperation_VariableCoefAnotherOrder_CorrectResult(double value, double expected, params double[] coef)
+        {
+            var g = new Polynomial(value, coef[0], coef[1], coef[2]);
+            var f = new Polynomial(value, coef[0], coef[1]);
+
+            double actual = (f + g).Value;
+
+            Assert.AreEqual(expected, actual, 3);
+        }
+
+        [TestCase(0, 0, 0.2, 15, 4, 8, 56.7)]
+        [TestCase(0.2, -0.016, 1, 1, 1, 1)]
+        [TestCase(1, -1, 1, 1, 1, 1)]
+        [TestCase(-0.1, 0.0001, 122.1, 0, 10, -1)]
+        public void MinusOperation_VariableCoef_CorrectResult(double value, double expected, params double[] coef)
+        {
+            var f = new Polynomial(value, coef[0], coef[1], coef[2]);
+            var g = new Polynomial(value, coef[0], coef[1], coef[2], coef[3]);
+
+            double actual = (f - g).Value;
+
+            Assert.AreEqual(expected, actual, 3);
+        }
+
+        [TestCase(0, 0, 0.2, 15, 4, 8)]
+        [TestCase(0.2, 0.048, 1, 1, 1, 1)]
+        [TestCase(1, 2, 1, 1, 1, 1)]
+        [TestCase(50, -100000, 122.1, 0, 10, -1)]
+        public void MinusOperation_VariableAnotherCoefOrder_CorrectResult(double value, double expected, params double[] coef)
+        {
+            var f = new Polynomial(value, coef[0], coef[1], coef[2], coef[3]);
+            var g = new Polynomial(value, coef[0], coef[1]);
+
+            double actual = (f - g).Value;
+
+            Assert.AreEqual(expected, actual, 3);
+        }
+
+        [TestCase(0, 0, 0.2, 15, 4, 8)]
+        [TestCase(2.6, 975.52, 1, 2, 3, 4)]
+        [TestCase(-2.6, 341.53, 1, 2, 3, 4)]
+        [TestCase(-2.6, 341.53, -1, -2, -3, -4)]
+        [TestCase(-2.6, -975.52, -1, 2, -3, 4)]
+        [TestCase(50, -50244200, 122.1, 0, 10, -1)]
+        public void MultiplicationOperation_VariableAnotherCoefOrder_CorrectResult(double value, double expected, params double[] coef)
+        {
+            var f = new Polynomial(value, coef[0], coef[1], coef[2]);
+            var g = new Polynomial(value, coef[1], coef[2], coef[3]);
+
+            double actual = (f * g).Value;
+
+            Assert.AreEqual(expected, actual, 3);
+        }
         #endregion
     }
 }
