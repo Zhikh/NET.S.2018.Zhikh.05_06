@@ -41,34 +41,37 @@ namespace Logic.Task2
         /// <returns> New polynomial </returns>
         public static Polynomial operator +(Polynomial f, Polynomial g)
         {
-            if (f._variable != g._variable)
+            checked
             {
-                throw new ArgumentException("Variables of polinoms must be the same!");
-            }
+                if (f._variable != g._variable)
+                {
+                    throw new ArgumentException("Variables of polinoms must be the same!");
+                }
 
-            double[] a, b;
-            if (f._coefficients.Length >= g._coefficients.Length)
-            {
-                a = f._coefficients;
-                b = g._coefficients;
-            }
-            else
-            {
-                a = g._coefficients;
-                b = f._coefficients;
-            }
+                double[] a, b;
+                if (f._coefficients.Length >= g._coefficients.Length)
+                {
+                    a = f._coefficients;
+                    b = g._coefficients;
+                }
+                else
+                {
+                    a = g._coefficients;
+                    b = f._coefficients;
+                }
 
-            double[] c = new double[a.Length];
+                double[] c = new double[a.Length];
 
-            int i = 0;
-            for (; i < b.Length; i++)
-            {
-                c[i] = a[i] + b[i];
-            }
+                int i = 0;
+                for (; i < b.Length; i++)
+                {
+                    c[i] = a[i] + b[i];
+                }
 
-            for (; i < a.Length; i++)
-            {
-                c[i] = a[i];
+                for (; i < a.Length; i++)
+                {
+                    c[i] = a[i];
+                }
             }
 
             return new Polynomial(f._variable, c);
@@ -123,25 +126,27 @@ namespace Logic.Task2
         /// <returns> New polynomial </returns>
         public static Polynomial operator *(Polynomial f, Polynomial g)
         {
-            if (f._variable != g._variable)
+            checked
             {
-                throw new ArgumentException("Variables of polinoms must be the same!");
-            }
-
-            double[] a = f._coefficients;
-            double[] b = g._coefficients;
-
-            int n = a.Length + b.Length - 1;
-            double[] c = new double[n];
-
-            for (int i = 0; i < a.Length; i++)
-            {
-                for (int j = 0; j < b.Length; j++)
+                if (f._variable != g._variable)
                 {
-                    c[i + j] += a[i] * b[j];
+                    throw new ArgumentException("Variables of polinoms must be the same!");
+                }
+
+                double[] a = f._coefficients;
+                double[] b = g._coefficients;
+
+                int n = a.Length + b.Length - 1;
+                double[] c = new double[n];
+
+                for (int i = 0; i < a.Length; i++)
+                {
+                    for (int j = 0; j < b.Length; j++)
+                    {
+                        c[i + j] += a[i] * b[j];
+                    }
                 }
             }
-
             return new Polynomial(f._variable, c);
         }
 
@@ -244,9 +249,12 @@ namespace Logic.Task2
         {
             double result = 0;
 
-            for (int i = 0; i < coefficients.Length; i++)
+            checked
             {
-                result += coefficients[i] * Math.Pow(variable, i);
+                for (int i = 0; i < coefficients.Length; i++)
+                {
+                    result += coefficients[i] * Math.Pow(variable, i);
+                }
             }
 
             return result;
