@@ -13,7 +13,6 @@ namespace Logic.Task1.Tests
         [TestCase("1AeF101", 16, 28242177)]
         [TestCase("1ACB67", 16, 1756007)]
         [TestCase("7FFFFFFF", 16, int.MaxValue)]
-        [TestCase("10000000000000000000000000000000", 2, int.MinValue)]
         public void ToDecimal_String_CorrectResult(string value, int scale, int expected)
         {
             var notation = new Notation(scale);     
