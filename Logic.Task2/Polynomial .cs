@@ -2,11 +2,10 @@
 
 namespace Logic.Task2
 {
-    public class Polynomial
+    public sealed class Polynomial
     {
         #region Fields
-        private double[] _coefficients;
-        private double _variable;
+        private readonly double[] _coefficients = { };
         #endregion
 
         #region Public methods
@@ -15,7 +14,7 @@ namespace Logic.Task2
         /// </summary>
         /// <param name="variable"> variable of polynomial </param>
         /// <param name="coefficients"> Coefficients of polynomial (locate in order) </param>
-        public Polynomial(double variable, params double[] coefficients)
+        public Polynomial(params double[] coefficients)
         {
             _coefficients = new double[coefficients.Length];
             for (int i = 0; i < coefficients.Length; i++)
@@ -23,39 +22,52 @@ namespace Logic.Task2
                 _coefficients[i] = coefficients[i];
             }
 
-            _variable = variable;
-
-            Value = CalculatePolinomial(_variable, _coefficients);
+            Degree = _coefficients.Length - 1;
         }
 
         /// <summary>
         /// Return value of polynomial
         /// </summary>
-        public double Value { get; }
+        public int Degree { get; }
+
+        public double this[int number]
+        {
+            get
+            {
+                if (number > _coefficients.Length)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                return _coefficients[number];
+            }
+
+            // ? set : it's really strange to work with _coefficients inside class by this[]
+        }
 
         /// <summary>
         /// Overload the "+" operation for Polynomial
         /// </summary>
-        /// <param name="f"> First polynomial</param>
-        /// <param name="g"> Second polynomial </param>
+        /// <param name="left"> First polynomial</param>
+        /// <param name="right"> Second polynomial </param>
         /// <returns> New polynomial </returns>
-        public static Polynomial operator +(Polynomial f, Polynomial g)
+        public static Polynomial operator +(Polynomial left, Polynomial right)
         {
-            if (f._variable != g._variable)
+            if (left == null || right == null)
             {
-                throw new ArgumentException("Variables of polinoms must be the same!");
+                throw new ArgumentNullException("Object of polynomial can't be null!");
             }
 
             double[] a, b;
-            if (f._coefficients.Length >= g._coefficients.Length)
+            if (left._coefficients.Length >= right._coefficients.Length)
             {
-                a = f._coefficients;
-                b = g._coefficients;
+                a = left._coefficients;
+                b = right._coefficients;
             }
             else
             {
-                a = g._coefficients;
-                b = f._coefficients;
+                a = right._coefficients;
+                b = left._coefficients;
             }
 
             double[] c = new double[a.Length];
@@ -71,25 +83,24 @@ namespace Logic.Task2
                 c[i] = a[i];
             }
 
-            return new Polynomial(f._variable, c);
-           
+            return new Polynomial(c);
         }
 
         /// <summary>
         /// Overload the "-" operation for Polynomial
         /// </summary>
-        /// <param name="f"> First polynomial</param>
-        /// <param name="g"> Second polynomial </param>
+        /// <param name="left"> First polynomial</param>
+        /// <param name="right"> Second polynomial </param>
         /// <returns> New polynomial </returns>
-        public static Polynomial operator -(Polynomial f, Polynomial g)
+        public static Polynomial operator -(Polynomial left, Polynomial right)
         {
-            if (f._variable != g._variable)
+            if (left == null || right == null)
             {
-                throw new ArgumentException("Variables of polinoms must be the same!");
+                throw new ArgumentNullException("Object of polynomial can't be null!");
             }
 
-            double[] a = f._coefficients;
-            double[] b = g._coefficients;
+            double[] a = left._coefficients;
+            double[] b = right._coefficients;
 
             int n;
             if (a.Length > b.Length)
@@ -113,24 +124,24 @@ namespace Logic.Task2
                 c[i] -= b[i];
             }
 
-            return new Polynomial(f._variable, c);
+            return new Polynomial(c);
         }
 
         /// <summary>
         /// Overload the "*" operation for Polynomial
         /// </summary>
-        /// <param name="f"> First polynomial</param>
+        /// <param name="left"> First polynomial</param>
         /// <param name="g"> Second polynomial </param>
         /// <returns> New polynomial </returns>
-        public static Polynomial operator *(Polynomial f, Polynomial g)
+        public static Polynomial operator *(Polynomial left, Polynomial right)
         {
-            if (f._variable != g._variable)
+            if (left == null || right == null)
             {
-                throw new ArgumentException("Variables of polinoms must be the same!");
+                throw new ArgumentNullException("Object of polynomial can't be null!");
             }
 
-            double[] a = f._coefficients;
-            double[] b = g._coefficients;
+            double[] a = left._coefficients;
+            double[] b = right._coefficients;
 
             int n = a.Length + b.Length - 1;
             double[] c = new double[n];
@@ -143,47 +154,72 @@ namespace Logic.Task2
                 }
             }
 
-            return new Polynomial(f._variable, c);
+            return new Polynomial(c);
         }
 
         /// <summary>
         /// Overload the "==" operation for Polynomial
         /// </summary>
-        /// <param name="f"> First polynomial</param>
+        /// <param name="left"> First polynomial</param>
+        /// <param name="right"> Second polynomial </param>
+        /// <returns> True if polynomials are equal </returns>
+        public static bool operator ==(Polynomial left, Polynomial right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null))
+            {
+                return false;
+            }
+
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Overload the "!=" operation for Polynomial
+        /// </summary>
+        /// <param name="left"> First polynomial</param>
         /// <param name="g"> Second polynomial </param>
         /// <returns> True if polynomials are equal </returns>
-        public static bool operator ==(Polynomial f, Polynomial g)
+        public static bool operator !=(Polynomial left, Polynomial right)
         {
-            if (f._coefficients.Length != g._coefficients.Length)
+            return !(left == right);
+        }
+
+        /// <summary>
+        /// Checks this with polynomial object on equals
+        /// </summary>
+        /// <param name="obj"> Object for checking </param>
+        /// <returns> True if objects the same </returns>
+        public bool Equals(Polynomial obj)
+        {
+            if (ReferenceEquals(null, obj))
             {
                 return false;
             }
 
-            if (f._variable != g._variable)
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (this._coefficients.Length != obj._coefficients.Length)
             {
                 return false;
             }
 
-            for (int i = 0; i < f._coefficients.Length; i++)
+            for (var i = 0; i < this._coefficients.Length; i++)
             {
-                if (f._coefficients[i] != g._coefficients[i])
+                if (!this._coefficients[i].Equals(obj._coefficients[i]))
                 {
                     return false;
                 }
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Overload the "!=" operation for Polynomial
-        /// </summary>
-        /// <param name="f"> First polynomial</param>
-        /// <param name="g"> Second polynomial </param>
-        /// <returns> True if polynomials are equal </returns>
-        public static bool operator !=(Polynomial f, Polynomial g)
-        {
-            return !(f == g);
         }
 
         /// <summary>
@@ -198,12 +234,20 @@ namespace Logic.Task2
                 return false;
             }
 
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
             if (this.GetType() != obj.GetType())
             {
                 return false;
             }
 
-            return this.GetHashCode() == ((Polynomial)obj).GetHashCode();
+            return this.Equals((Polynomial)obj);
+
+            // vs
+            // return this.GetHashCode() == ((Polynomial)obj).GetHashCode();
         }
 
         /// <summary>
@@ -217,7 +261,6 @@ namespace Logic.Task2
                 int hash = 21;
 
                 hash = (hash * 7) + (!object.ReferenceEquals(null, _coefficients) ? _coefficients.GetHashCode() : 0);
-                hash = (hash * 7) + (!object.ReferenceEquals(null, _variable) ? _variable.GetHashCode() : 0);
 
                 return hash;
             }
@@ -236,23 +279,24 @@ namespace Logic.Task2
                 result += " + " + _coefficients[i] + "*x^" + i;
             }
 
-            return Value.ToString();
+            return result.ToString();
         }
-        #endregion
 
-        #region Private methods
-        private static double CalculatePolinomial(double variable, double[] coefficients)
+        /// <summary>
+        /// Calculates value of polynomial in the point = variable
+        /// </summary>
+        /// <param name="variable"> Point </param>
+        /// <returns> Value of polynomial in the point </returns>
+        public double GetValue(double variable)
         {
-            
             double result = 0;
                 
-            for (int i = 0; i < coefficients.Length; i++)
+            for (int i = 0; i < _coefficients.Length; i++)
             {
-                result += coefficients[i] * Math.Pow(variable, i);
+                result += _coefficients[i] * Math.Pow(variable, i);
             }
 
             return result;
-           
         }
         #endregion
     }
