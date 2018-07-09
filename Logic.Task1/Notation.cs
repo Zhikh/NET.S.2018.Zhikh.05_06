@@ -11,7 +11,6 @@ namespace Logic.Task1
         #endregion
 
         #region Fields
-        private object _syncHandle = new object();
         private int _notationScale;
         #endregion
 
@@ -33,24 +32,18 @@ namespace Logic.Task1
         {
             get
             {
-                lock (this._syncHandle)
-                {
-                    return _notationScale;
-                }
+                return _notationScale;
             }
 
             set
             {
-                lock (this._syncHandle)
+                if (value >= 2 && value <= 16)
                 {
-                    if (value >= 2 && value <= 16)
-                    {
-                        _notationScale = value;
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Scale of notation must be in range [2, 16].");
-                    }
+                    _notationScale = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Scale of notation must be in range [2, 16].");
                 }
             }
         }
