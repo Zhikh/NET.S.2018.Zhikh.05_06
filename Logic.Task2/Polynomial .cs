@@ -16,6 +16,11 @@ namespace Logic.Task2
         /// <param name="coefficients"> Coefficients of polynomial (locate in order) </param>
         public Polynomial(params double[] coefficients)
         {
+            if (coefficients == null)
+            {
+                throw new ArgumentNullException("Array can't be null!");
+            }
+
             _coefficients = new double[coefficients.Length];
             for (int i = 0; i < coefficients.Length; i++)
             {
@@ -30,11 +35,17 @@ namespace Logic.Task2
         /// </summary>
         public int Degree { get; }
 
+        /// <summary>
+        /// Gets coefficient by index
+        /// </summary>
+        /// <param name="number"> Position of coefficient </param>
+        /// <returns> Coefficient </returns>
+        /// <exception cref="IndexOutOfRangeException"> If index is more than number of coefficients </exception>
         public double this[int number]
         {
             get
             {
-                if (number > _coefficients.Length)
+                if (number > _coefficients.Length || number < 0)
                 {
                     throw new IndexOutOfRangeException();
                 }
@@ -51,6 +62,7 @@ namespace Logic.Task2
         /// <param name="left"> First polynomial</param>
         /// <param name="right"> Second polynomial </param>
         /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
         public static Polynomial operator +(Polynomial left, Polynomial right)
         {
             if (left == null || right == null)
@@ -92,6 +104,7 @@ namespace Logic.Task2
         /// <param name="left"> First polynomial</param>
         /// <param name="right"> Second polynomial </param>
         /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
         public static Polynomial operator -(Polynomial left, Polynomial right)
         {
             if (left == null || right == null)
@@ -133,6 +146,7 @@ namespace Logic.Task2
         /// <param name="left"> First polynomial</param>
         /// <param name="g"> Second polynomial </param>
         /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
         public static Polynomial operator *(Polynomial left, Polynomial right)
         {
             if (left == null || right == null)
