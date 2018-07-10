@@ -2,7 +2,7 @@
 
 namespace Logic.Task2
 {
-    public sealed class Polynomial
+    public sealed class Polynomial: ICloneable, IEquatable<Polynomial>
     {
         #region Fields
         private readonly double[] _coefficients = { };
@@ -311,6 +311,14 @@ namespace Logic.Task2
             }
 
             return result;
+        }
+
+        public object Clone()
+        {
+            //return new this.MemberwiseClone();
+            //vs
+
+            return new Polynomial(_coefficients);
         }
         #endregion
     }
