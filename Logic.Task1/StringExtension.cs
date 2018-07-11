@@ -33,19 +33,23 @@ namespace Logic.Task1
         #region Private methods
         private static int Convert(string value)
         {
-            int result = 0;
             int[] array = new int[value.Length];
-
             value.ToIntArray(array);
-            
+
+            int n = array.Length;
+            int result = array[n - 1];
+
             int temp = 1;
             try
             {
-                for (int i = array.Length - 1; i >= 0; i--)
+                for (int i = n - 2; i >= 0; i--)
                 {
-                    result += checked(temp * array[i]);
+                    checked
+                    {
+                        temp *= _notation.Base;
 
-                    temp *= _notation.Base;
+                        result += temp * array[i];
+                    }
                 }
             }
             catch (OverflowException)
