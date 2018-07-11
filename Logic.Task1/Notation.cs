@@ -1,120 +1,49 @@
 ﻿using System;
-using System.Linq;
+using System.Text;
 
 namespace Logic.Task1
 {
-    public class Notation
+    internal sealed class Notation
     {
-        #region Constants
-        private const int A_POSITION = 65;
-        private const int HEX_POSITION = 10;
-        #endregion
-
-        #region Fields
-        private int _notationScale;
-        #endregion
-
-        #region Public and Internal methods
+        #region Pablic methods
         /// <summary>
-        /// Initialize NotationScale with value
+        /// Initialize Base and Alphabet
         /// </summary>
-        /// <param name="value"> Scale of notation </param>
-        public Notation(int value = 2)
+        /// <param name="base"> Scale of notation </param>
+        public Notation(int @base = 2)
         {
-            NotationScale = value;
+            if (@base < 2 || @base > 16)
+            {
+                throw new ArgumentException("Scale of notation must be in range [2, 16].");
+            }
+
+            Base = @base;
+
+            Alphabet = GenerateAlphabet();
         }
 
         /// <summary>
-        /// Scale of natation
+        /// Scale of notation
         /// </summary>
-        /// <exception cref="ArgumentException"> If scale isn't in range [2, 16] </exception>
-        public int NotationScale
-        {
-            get
-            {
-                return _notationScale;
-            }
-
-            set
-            {
-                if (value >= 2 && value <= 16)
-                {
-                    _notationScale = value;
-                }
-                else
-                {
-                    throw new ArgumentException("Scale of notation must be in range [2, 16].");
-                }
-            }
-        }
+        public int Base { get; }
 
         /// <summary>
-        /// Converts string value into decimal value
+        /// Alphabet for current notation
         /// </summary>
-        /// <param name="value"> Decimal of written in the p-number system </param>
-        /// <returns> Decimal value </returns>
-        /// <exception cref="OverflowException"> If result of calculation gives overflow </exception>
-        /// <exception cref="ArgumentException"> If string value or scale of notation aren't correct </exception>
-        internal int Convert(string value)
-        {
-            ToIntArray(value, out int[] array);
-
-            CheckOnBase(array);
-
-            try
-            { 
-                int result = 0;
-                checked
-                {
-                    int i = 0;
-                    for (var power = array.Count() - 1; power >= 0; power--)
-                    {
-                        result += (int)Math.Pow(NotationScale, power) * array[i++];
-                    }
-                }
-
-                return result;
-            }
-            catch (OverflowException ex)
-            {
-                throw ex;
-            }
-
-        }
+        public string Alphabet { get; }
         #endregion
 
         #region Private methods
-        // Convert string value into array of interger values
-        private void ToIntArray(string value, out int[] array)
+        private string GenerateAlphabet()
         {
-            array = new int[value.Length];
+            var stringBuilder = new StringBuilder(Base);
 
-            int i = 0;
-            foreach (var element in value)
+            for (int i = 0; i < Base; i++)
             {
-                if (char.IsNumber(element))
-                {
-                    array[i++] = (int)char.GetNumericValue(element);
-                }
-                else
-                {
-                    char temp = char.ToUpper(element);
-
-                    array[i++] = (int)temp - A_POSITION + HEX_POSITION;
-                }
+                stringBuilder.Append(i.ToString("X"));
             }
-        }
 
-        // Check array values for finding values that more than scale of notation
-        private void CheckOnBase(int[] array)
-        {
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (array[i] >= NotationScale)
-                {
-                    throw new ArgumentException("Value can't consist means more thane scale of notation!");
-                }
-            }
+            return stringBuilder.ToString();
         }
         #endregion
     }
