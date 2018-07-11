@@ -33,22 +33,18 @@ namespace Logic.Task1
         #region Private methods
         private static int Convert(string value)
         {
-            int[] array = new int[value.Length];
-            value.ToIntArray(array);
-
-            int n = array.Length;
-            int result = array[n - 1];
-
-            int temp = 1;
+            string upperValue = value.ToUpper();
+            int n = upperValue.Length;
+            int result = GetIndex(upperValue[n - 1]);
+            int power = 1;
             try
             {
-                for (int i = n - 2; i >= 0; i--)
+                checked
                 {
-                    checked
+                    for (int i = n - 2; i >= 0; i--)
                     {
-                        temp *= _notation.Base;
-
-                        result += temp * array[i];
+                        power *= _notation.Base;
+                        result += power * GetIndex(upperValue[i]);
                     }
                 }
             }
@@ -60,23 +56,16 @@ namespace Logic.Task1
             return result;
         }
 
-        private static void ToIntArray(this string value, int[] array)
+        private static int GetIndex(char value)
         {
-            string upperValue = value.ToUpper();
+            int temp = _notation.Alphabet.IndexOf(value);
 
-            int i = 0;
-            int position;
-            foreach (var element in upperValue)
+            if (temp == -1)
             {
-                position = _notation.Alphabet.IndexOf(element);
-
-                if (position == -1)
-                {
-                    throw new ArgumentException("Value can't consist means more thane scale of notation!");
-                }
-
-                array[i++] = position;
+                throw new ArgumentException("Value isn't correct!");
             }
+
+            return temp;
         }
         #endregion
     }
