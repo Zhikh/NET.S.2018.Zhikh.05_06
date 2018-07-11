@@ -259,9 +259,6 @@ namespace Logic.Task2
             }
 
             return this.Equals((Polynomial)obj);
-
-            // vs
-            // return this.GetHashCode() == ((Polynomial)obj).GetHashCode();
         }
 
         /// <summary>
@@ -274,7 +271,10 @@ namespace Logic.Task2
             {
                 int hash = 21;
 
-                hash = (hash * 7) + (!object.ReferenceEquals(null, _coefficients) ? _coefficients.GetHashCode() : 0);
+                foreach (var element in _coefficients)
+                {
+                    hash = (hash * 7) + element.GetHashCode();
+                }
 
                 return hash;
             }
@@ -315,9 +315,6 @@ namespace Logic.Task2
 
         public object Clone()
         {
-            //return new this.MemberwiseClone();
-            //vs
-
             return new Polynomial(_coefficients);
         }
         #endregion
