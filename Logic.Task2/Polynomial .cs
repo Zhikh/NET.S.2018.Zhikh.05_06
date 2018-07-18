@@ -2,18 +2,24 @@
 
 namespace Logic.Task2
 {
-    public sealed class Polynomial: ICloneable, IEquatable<Polynomial>
+    public sealed class Polynomial : ICloneable, IEquatable<Polynomial>
     {
         #region Fields
         private readonly double[] _coefficients = { };
         #endregion
 
         #region Public methods
+        static Polynomial()
+        {
+            Epsilon = double.Parse(System.Configuration.ConfigurationManager.AppSettings["epsilon"]);
+        }
+
         /// <summary>
         /// Initialize variable and coefficients
         /// </summary>
         /// <param name="variable"> variable of polynomial </param>
         /// <param name="coefficients"> Coefficients of polynomial (locate in order) </param>
+        /// <exception cref="ArgumentNullException"> When coefficients </exception>
         public Polynomial(params double[] coefficients)
         {
             if (coefficients == null)
@@ -28,6 +34,11 @@ namespace Logic.Task2
         }
 
         /// <summary>
+        /// Comparison accuracy
+        /// </summary>
+        public static double Epsilon { get; set; }
+
+        /// <summary>
         /// Return value of polynomial
         /// </summary>
         public int Degree { get; }
@@ -37,7 +48,7 @@ namespace Logic.Task2
         /// </summary>
         /// <param name="number"> Position of coefficient </param>
         /// <returns> Coefficient </returns>
-        /// <exception cref="IndexOutOfRangeException"> If index is more than number of coefficients </exception>
+        /// <exception cref="ArgumentOutOfRangeException"> If index is more than number of coefficients </exception>
         public double this[int number]
         {
             get
@@ -49,16 +60,19 @@ namespace Logic.Task2
 
                 return _coefficients[number];
             }
+
             private set
             {
                 if (number >= 0 || number < _coefficients.Length)
                 {
                     _coefficients[number] = value;
                 }
+
                 throw new ArgumentOutOfRangeException();
             }
         }
 
+        #region Add
         /// <summary>
         /// Overload the "+" operation for Polynomial
         /// </summary>
@@ -77,17 +91,53 @@ namespace Logic.Task2
             int rightLength = right._coefficients.Length;
 
             int n = leftLength < rightLength ? rightLength : leftLength;
-            double[] c = new double[n];
+            double[] coefficients = new double[n];
 
-            left._coefficients.CopyTo(c, 0);
+            left._coefficients.CopyTo(coefficients, 0);
 
             for (int i = 0; i < rightLength; i++)
             {
-                c[i] += right._coefficients[i];
+                coefficients[i] += right._coefficients[i];
             }
 
-            return new Polynomial(c);
+            return new Polynomial(coefficients);
         }
+
+        /// <summary>
+        /// Overload the "+" operation for Polynomial
+        /// </summary>
+        /// <param name="left"> Polynomial</param>
+        /// <param name="value"> Decimal value </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If polinomial is null </exception>
+        public static Polynomial operator +(Polynomial left, double value)
+        {
+            if (left == null)
+            {
+                throw new ArgumentNullException("Object of polynomial can't be null!");
+            }
+
+            int leftLength = left._coefficients.Length;
+
+            int n = leftLength;
+            double[] coefficients = new double[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                coefficients[i] = left._coefficients[i] + value;
+            }
+
+            return new Polynomial(coefficients);
+        }
+
+        /// <summary>
+        /// Overload the "+" operation for Polynomial
+        /// </summary>
+        /// <param name="left"> Polynomial</param>
+        /// <param name="value"> Decimal value </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If polinomial is null </exception>
+        public static Polynomial operator +(double value, Polynomial right) => right + value;
 
         /// <summary>
         /// Add operation
@@ -95,16 +145,29 @@ namespace Logic.Task2
         /// <param name="left"> First polynomial</param>
         /// <param name="right"> Second polynomial </param>
         /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
         public static Polynomial Add(Polynomial left, Polynomial right) => left + right;
 
         /// <summary>
-        /// Substruct operation
+        /// Add operation
         /// </summary>
-        /// <param name="left"> First polynomial</param>
-        /// <param name="right"> Second polynomial </param>
+        /// <param name="value"> Decimal value </param>
+        /// <param name="right"> Polynomial </param>
         /// <returns> New polynomial </returns>
-        public static Polynomial Substruct(Polynomial left, Polynomial right) => left - right;
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
+        public static Polynomial Add(double value, Polynomial right) => right + value;
 
+        /// <summary>
+        /// Add operation
+        /// </summary>
+        /// <param name="value"> Decimal value </param>
+        /// <param name="left"> Polynomial </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
+        public static Polynomial Add(Polynomial left, double value) => left + value;
+        #endregion
+
+        #region Substruct
         /// <summary>
         /// Overload the "-" operation for Polynomial
         /// </summary>
@@ -122,6 +185,17 @@ namespace Logic.Task2
             return left + right;
         }
 
+        /// <summary>
+        /// Substruct operation
+        /// </summary>
+        /// <param name="left"> First polynomial</param>
+        /// <param name="right"> Second polynomial </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
+        public static Polynomial Substruct(Polynomial left, Polynomial right) => left - right;
+        #endregion
+
+        #region Multiply
         /// <summary>
         /// Overload the "*" operation for Polynomial
         /// </summary>
@@ -152,6 +226,68 @@ namespace Logic.Task2
 
             return new Polynomial(c);
         }
+
+        /// <summary>
+        /// Multiply operation
+        /// </summary>
+        /// <param name="left"> Polynomial </param>
+        /// <param name="value"> Decimal value </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If polinomial is null </exception>
+        public static Polynomial operator *(Polynomial left, double value)
+        {
+            if (left == null)
+            {
+                throw new ArgumentNullException("Object of polynomial can't be null!");
+            }
+
+            int n = left._coefficients.Length;
+            double[] coefficients = new double[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                coefficients[i] = left._coefficients[i] * value;
+            }
+
+            return new Polynomial(coefficients);
+        }
+
+        /// <summary>
+        /// Multiply operation
+        /// </summary>
+        /// <param name="right"> Polynomial </param>
+        /// <param name="value"> Decimal value </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If polinomial is null </exception>
+        public static Polynomial operator *(double value, Polynomial right) => right * value;
+
+        /// <summary>
+        /// Multiply operation
+        /// </summary>
+        /// <param name="left"> First polynomial</param>
+        /// <param name="right"> Second polynomial </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
+        public static Polynomial Multiply(Polynomial left, Polynomial right) => left * right;
+
+        /// <summary>
+        /// Multiply operation
+        /// </summary>
+        /// <param name="left"> Polynomial </param>
+        /// <param name="value"> Decimal value </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
+        public static Polynomial Multiply(Polynomial left, double value) => left * value;
+
+        /// <summary>
+        /// Multiply operation
+        /// </summary>
+        /// <param name="right"> Polynomial</param>
+        /// <param name="value"> Decimal value </param>
+        /// <returns> New polynomial </returns>
+        /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
+        public static Polynomial Multiply(double value, Polynomial right) => right * value;
+        #endregion
 
         /// <summary>
         /// Overload the "==" operation for Polynomial
