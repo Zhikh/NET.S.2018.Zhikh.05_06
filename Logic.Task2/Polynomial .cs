@@ -22,10 +22,7 @@ namespace Logic.Task2
             }
 
             _coefficients = new double[coefficients.Length];
-            for (int i = 0; i < coefficients.Length; i++)
-            {
-                _coefficients[i] = coefficients[i];
-            }
+            coefficients.CopyTo(_coefficients, 0);
 
             Degree = _coefficients.Length - 1;
         }
@@ -47,13 +44,19 @@ namespace Logic.Task2
             {
                 if (number > _coefficients.Length || number < 0)
                 {
-                    throw new IndexOutOfRangeException();
+                    throw new ArgumentOutOfRangeException();
                 }
 
                 return _coefficients[number];
             }
-
-            // ? set : it's really strange to work with _coefficients inside class by this[]
+            private set
+            {
+                if (number >= 0 || number < _coefficients.Length)
+                {
+                    _coefficients[number] = value;
+                }
+                throw new ArgumentOutOfRangeException();
+            }
         }
 
         /// <summary>
@@ -70,33 +73,37 @@ namespace Logic.Task2
                 throw new ArgumentNullException("Object of polynomial can't be null!");
             }
 
-            double[] a, b;
-            if (left._coefficients.Length >= right._coefficients.Length)
-            {
-                a = left._coefficients;
-                b = right._coefficients;
-            }
-            else
-            {
-                a = right._coefficients;
-                b = left._coefficients;
-            }
+            int leftLength = left._coefficients.Length;
+            int rightLength = right._coefficients.Length;
 
-            double[] c = new double[a.Length];
-            
-            int i = 0;
-            for (; i < b.Length; i++)
-            {
-                c[i] = a[i] + b[i];
-            }
+            int n = leftLength < rightLength ? rightLength : leftLength;
+            double[] c = new double[n];
 
-            for (; i < a.Length; i++)
+            left._coefficients.CopyTo(c, 0);
+
+            for (int i = 0; i < rightLength; i++)
             {
-                c[i] = a[i];
+                c[i] += right._coefficients[i];
             }
 
             return new Polynomial(c);
         }
+
+        /// <summary>
+        /// Add operation
+        /// </summary>
+        /// <param name="left"> First polynomial</param>
+        /// <param name="right"> Second polynomial </param>
+        /// <returns> New polynomial </returns>
+        public static Polynomial Add(Polynomial left, Polynomial right) => left + right;
+
+        /// <summary>
+        /// Substruct operation
+        /// </summary>
+        /// <param name="left"> First polynomial</param>
+        /// <param name="right"> Second polynomial </param>
+        /// <returns> New polynomial </returns>
+        public static Polynomial Substruct(Polynomial left, Polynomial right) => left - right;
 
         /// <summary>
         /// Overload the "-" operation for Polynomial
@@ -107,37 +114,12 @@ namespace Logic.Task2
         /// <exception cref="ArgumentNullException"> If one of objects is null </exception>
         public static Polynomial operator -(Polynomial left, Polynomial right)
         {
-            if (left == null || right == null)
+            for (int i = 0; i < right._coefficients.Length; i++)
             {
-                throw new ArgumentNullException("Object of polynomial can't be null!");
+                right._coefficients[i] *= -1; 
             }
 
-            double[] a = left._coefficients;
-            double[] b = right._coefficients;
-
-            int n;
-            if (a.Length > b.Length)
-            {
-                n = a.Length;
-            }
-            else
-            {
-                n = b.Length;
-            }
-
-            double[] c = new double[n];
-
-            for (int i = 0; i < a.Length; i++)
-            {
-                c[i] = a[i];
-            }
-                
-            for (int i = 0; i < b.Length; i++)
-            {
-                c[i] -= b[i];
-            }
-
-            return new Polynomial(c);
+            return left + right;
         }
 
         /// <summary>
@@ -196,7 +178,7 @@ namespace Logic.Task2
         /// Overload the "!=" operation for Polynomial
         /// </summary>
         /// <param name="left"> First polynomial</param>
-        /// <param name="g"> Second polynomial </param>
+        /// <param name="right"> Second polynomial </param>
         /// <returns> True if polynomials are equal </returns>
         public static bool operator !=(Polynomial left, Polynomial right)
         {
@@ -315,7 +297,7 @@ namespace Logic.Task2
 
         public object Clone()
         {
-            return new Polynomial(_coefficients);
+            return this.MemberwiseClone();
         }
         #endregion
     }
