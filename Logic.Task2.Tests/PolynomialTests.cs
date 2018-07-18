@@ -26,8 +26,8 @@ namespace Logic.Task2.Tests
         {
             Polynomial f = new Polynomial(array);
 
-            Assert.Throws<IndexOutOfRangeException>(delegate { double value = f[array.Length + 1]; });
-            Assert.Throws<IndexOutOfRangeException>(delegate { double value = f[-1]; });
+            Assert.Throws<ArgumentOutOfRangeException>(delegate { double value = f[array.Length + 1]; });
+            Assert.Throws<ArgumentOutOfRangeException>(delegate { double value = f[-1]; });
         }
         #endregion
 
